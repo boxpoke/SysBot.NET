@@ -1,4 +1,4 @@
-﻿using PKHeX.Core;
+using PKHeX.Core;
 using System;
 using System.Linq;
 
@@ -42,4 +42,6 @@ public class PokeTradeQueue<TPoke>(PokeTradeType Type)
         var list = Queue.Select((x, i) => x.Value.Summary(i + 1));
         return string.Join("\n", list);
     }
+
+    public bool Contains(string trainerName) => Queue.Where(x => x.Value.Trainer.TrainerName == trainerName).Count() > 0;
 }

@@ -1,6 +1,7 @@
-﻿using PKHeX.Core;
+using PKHeX.Core;
 using SysBot.Pokemon.Discord;
 using SysBot.Pokemon.Twitch;
+using SysBot.Pokemon.Web;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ public class PokeBotRunnerImpl<T> : PokeBotRunner<T> where T : PKM, new()
     public PokeBotRunnerImpl(PokeTradeHubConfig config, BotFactory<T> fac) : base(config, fac) { }
 
     private static TwitchBot<T>? Twitch;
+    private static WebBot<T>? Web;
 
     protected override void AddIntegrations()
     {
@@ -49,5 +51,17 @@ public class PokeBotRunnerImpl<T> : PokeBotRunner<T> where T : PKM, new()
 
         var bot = new SysCord<T>(this);
         Task.Run(() => bot.MainAsync(token, CancellationToken.None), CancellationToken.None);
+    }
+    private void AddWebBot(WebSettings config)
+    {
+        if (string.IsNullOrWhiteSpace(config.URIEndpoint))
+            return;
+        if (Web != null)
+            return; // already created
+
+        if (string.IsNullOrEmpty(config.URIEndpoint))
+            return;
+
+        Web = new WebBot<T>(Hub.Config.Web, Hub);
     }
 }
